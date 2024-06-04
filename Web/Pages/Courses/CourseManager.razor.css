@@ -1,0 +1,32 @@
+﻿.course-list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	align-content: space-evenly;
+}
+
+.course-item {
+	min-height: 10rem;
+	padding: 3rem;
+	border: 1px solid #f0f0f0;
+	border-radius: 1rem;
+	transition: background-color 0.3s ease;
+}
+
+.course-item:hover {
+	background-color: #f2f2f2;
+}
+
+::deep .info-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+::deep .label {
+	text-align: left;
+}
+
+::deep .value {
+	margin-left: 0.8rem;
+	text-align: center;
+}

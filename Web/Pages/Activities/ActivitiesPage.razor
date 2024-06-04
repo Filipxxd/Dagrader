@@ -1,0 +1,101 @@
+﻿@*@attribute [Route(Routes.Activities)]
+
+<PageTitle>Sportovní Aktivity</PageTitle>
+
+<AuthorizeView Roles="Student">
+	<Authorized>
+		<BetterModal OnConfirm="@HandleCreate" OnCanceled="@(() => ActivityUnitItemCreate = new())" IsLoading="@IsBusy">
+			<Input Placeholder="Celý Název" @bind-Value="@ActivityUnitItemCreate.DisplayName" />
+			<ErrorMessage Message="@ActivityUnitItemCreate.GetPropertyErrorMessage(nameof(ActivityUnitItemCreate.DisplayName))" />
+
+			<Input Placeholder="Zkrácený Název" @bind-Value="@ActivityUnitItemCreate.DisplayNameShort" />
+			<ErrorMessage Message="@ActivityUnitItemCreate.GetPropertyErrorMessage(nameof(ActivityUnitItemCreate.DisplayNameShort))" />
+		</BetterModal>
+
+		@foreach(var item in ActivityUnitItems)
+		{
+			<div>
+				@item.DisplayName
+				@item.DisplayNameShort
+				Edit
+				@if (item.IsDeletable)
+				{
+					<BetterModal OnConfirm="() => HandleDelete(item.ActivityUnitId)"  ConfirmText=@ActionMessages.Delete ConfirmType="danger">
+						<span>Opravdu si přejete smazat: @(item.DisplayName)?</span>
+					</BetterModal>
+				}
+			</div>
+		}
+	</Authorized>
+
+	<NotAuthorized>
+		<NotAuthorizedResult />
+	</NotAuthorized>
+</AuthorizeView>
+
+@code{
+	[Inject] public ActivityAppService _activityAppService { get; set; } = default!;
+
+	[Inject] public ViewModelValidator _viewModelValidator { get; set; } = default!;
+
+	[Inject] public MessageService _messageService { get; set; } = default!;
+
+	public List<ActivityUnitDTO> ActivityUnitItems { get; set; } = new();
+
+	public ActivityUnitDTO ActivityUnitItemCreate { get; set; } = new();
+
+	public bool IsBusy { get; set; } = false;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await Reload();
+	}
+
+	private async Task Reload()
+	{
+		ActivityUnitItems = await _activityAppService.GetAllActivityUnits();
+		ActivityUnitItemCreate = new();
+	}
+
+	private async Task HandleCreate()
+	{
+		if (IsBusy) return;
+		IsBusy = true;
+
+		ValidationResult = _viewModelValidator.ValidateModel<ActivityUnitValidator, ActivityUnitDTO>(ActivityUnitItemCreate);
+
+		if (ActivityUnitItemCreate.ValidationResult.IsValid)
+		{
+			var result = await _activityAppService.CreateActivityUnit(ActivityUnitItemCreate);
+			
+			if (result == EntityOperationResult.Success)
+			{
+
+				_ = _messageService.Success("Nová časová jednotka přidána.");
+			}
+			else
+			{
+				_ = _messageService.Error("Zkuste to požději");
+			}
+
+			await Reload();
+		}
+
+		IsBusy = false;
+	}
+
+	private async Task HandleDelete(int activityUnitId)
+	{
+		var result = await _activityAppService.DeleteActivityUnit(activityUnitId);
+
+		if (result == EntityOperationResult.Success)
+		{
+
+			_ = _messageService.Success("Časová jednotka odstraněna.");
+		}
+		else
+		{
+			_ = _messageService.Error("Zkuste to požději");
+		}
+	}
+}*@

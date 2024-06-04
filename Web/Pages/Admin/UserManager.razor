@@ -1,0 +1,108 @@
+﻿@inherits PageComponentBase<UserManagerViewModel>
+
+@attribute [Route(Routes.UserManager)]
+
+@attribute [Authorize(Roles = $"{Roles.Admin}")]
+
+<PageTitle>Správce Uživatelů</PageTitle>
+
+<UserEditModal Model=@Model.EditModal />
+
+<GridRow Justify="center">
+	<GridCol Span=24 Sm=20 Md=16 Lg=15 Xl=14>
+		<Space Direction=@DirectionVHType.Vertical Class="w-100">
+			<SpaceItem>
+				<GridCol Span=24 Sm=20 Md=16 Lg=14 Xl=12 Class="mx-auto">
+					<Search Placeholder="Hledaný výraz" DebounceMilliseconds=500 @bind-Value=Model.SearchTerm OnChange=Model.HandleSearch Size=@InputSize.Large AllowClear />
+				</GridCol>
+			</SpaceItem>
+
+			<SpaceItem class="ant-table-wrapper ant-table-responsive">
+				<div class="ant-table ant-table-fixed-header">
+					<div class="ant-table-container">
+						<div class="ant-table-content" style="overflow-y: scroll; max-height: 55vh; min-height: 55vh;">
+							<table>
+								<thead class="ant-table-thead" style="position: sticky; top: 0; z-index: 1;">
+									<tr>
+										<th class="ant-table-cell">
+											<span class="ant-table-column-title">
+												Jméno
+											</span>
+										</th>
+										<th class="ant-table-cell">
+											<span class="ant-table-column-title">
+												Příjmení
+											</span>
+										</th>
+										<th class="ant-table-cell">
+											<span class="ant-table-column-title">
+												Role
+											</span>
+										</th>
+										<th class="ant-table-cell">
+											<span class="ant-table-column-title">
+												Pohlaví
+											</span>
+										</th>
+										<th class="ant-table-cell" style="text-align: center">
+											<span class="ant-table-column-title">
+												Akce
+											</span>
+										</th>
+									</tr>
+								</thead>
+
+								<tbody class="ant-table-tbody">
+									@if (!Model.UsersList.Any())
+									{
+									<td colspan="5" class="ant-table-cell">
+										<Empty>
+											<DescriptionTemplate>
+												Nic nenalezeno
+											</DescriptionTemplate>
+										</Empty>
+									</td>
+									}
+
+									@{int i = 0;}
+									@foreach (var user in Model.UsersList)
+									{
+									<tr data-row-key="@(i++)" class="ant-table-row ant-table-row-level-0">
+										<td class="ant-table-cell" rowspan="1" colspan="1" data-label="Jméno">
+												@user.FirstName
+										</td>
+
+										<td class="ant-table-cell" rowspan="1" colspan="1" data-label="Příjmení">
+												@user.LastName
+										</td>
+
+										<td class="ant-table-cell" rowspan="1" colspan="1" data-label="Role">
+												@(user.Roles.Any() ? string.Join(", ", user.Roles) : "-")
+										</td>
+
+										<td class="ant-table-cell" rowspan="1" colspan="1" data-label="Pohlaví">
+												@(user.Gender == Gender.Male ? "Muž" : "Žena")
+										</td>
+
+										<td class="ant-table-cell" rowspan="1" colspan="1" data-label="Akce" style="text-align: center">
+											<Button OnClick=@(() => Model.EditModal.HandleShowModal(user.Id))>@ActionMessages.Edit</Button>
+											<Button OnClick=@(() => Model.HandleUserDelete(user.Id)) Type="danger">@ActionMessages.Delete</Button>
+										</td>
+									</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</SpaceItem>
+
+			<SpaceItem>
+				<Flex Justify="center">
+					<Pagination Current=Model.UsersList.Page Total=Model.UsersList.TotalItems PageSize=Model.PageSize ShowSizeChanger
+								OnChange=Model.HandlePageChange PageSizeOptions=Model.PageSizeOptions OnShowSizeChange=Model.HandleItemsPerPageChange />
+				</Flex>
+			</SpaceItem>
+		</Space>
+	</GridCol>
+</GridRow>

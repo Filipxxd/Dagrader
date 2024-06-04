@@ -1,0 +1,46 @@
+﻿<ModalBase Model=@Model Title="Editace Uživatele">
+	<ChildContent>
+		<Space Direction=@DirectionVHType.Vertical Class="w-100">
+			<SpaceItem>
+				<Input Size=@InputSize.Large @bind-Value=Model.Email Disabled/>
+			</SpaceItem>
+
+			<SpaceItem>
+				<InputValidated Placeholder="Křestní Jméno" @bind-Value=Model.FirstName ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.FirstName)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<InputValidated Placeholder="Příjmení" @bind-Value=Model.LastName ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.LastName)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<Select Mode="multiple"
+						Placeholder="Vyberte role"
+						TItem=string
+						TItemValue=string
+						@bind-Values=@Model.AssignedRoleIds
+						DefaultValues=@Model.AssignedRoleIds>
+					<SelectOptions>
+						@foreach (var item in Model.AvailableRoles)
+						{
+							<SelectOption TItemValue=string TItem=string Value=@item.Key Label=@item.Value />
+						}
+					</SelectOptions>
+				</Select>
+				<ErrorMessage Text=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.AssignedRoleIds)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<Text>Pohlaví: </Text>
+				<Segmented @bind-Value=Model.Gender>
+					<SegmentedItem Value=Gender.Male Label="Muž" />
+					<SegmentedItem Value=Gender.Female Label="Žena" />
+				</Segmented>
+			</SpaceItem>
+		</Space>
+	</ChildContent>
+</ModalBase>
+
+@code {
+	[Parameter] public Application.ViewModels.Admin.UserEditModal Model { get; set; } = default!;
+}

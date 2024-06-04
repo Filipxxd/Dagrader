@@ -1,0 +1,24 @@
+﻿<Button Type=@ButtonType.Default OnClick=Model.HandleShowModal>@ActionMessages.Create</Button>
+
+<ModalBase Model=@Model Title="Vytvořit Třídu">
+	<ChildContent>
+		<Space Direction=@DirectionVHType.Vertical Class="w-100">
+			<SpaceItem>
+				<Input Type="number" Placeholder="Ročník" @bind-Value=Model.ClassYear />
+			</SpaceItem>
+
+			<Select DataSource=@Model.AvailableSymbols
+					@bind-Value=@Model.ClassSymbol
+					Placeholder="Symbol třídy">
+			</Select>
+
+			<SpaceItem>
+				<Input Placeholder="Ročník" @bind-Value=Model.AcademicYear ReadOnly />
+			</SpaceItem>
+		</Space>
+	</ChildContent>
+</ModalBase>
+
+@code {
+	[Parameter] public Application.ViewModels.Courses.CourseCreateModal Model { get; set; } = default!;
+}

@@ -1,0 +1,81 @@
+﻿@inject NavigationManager _navigationManager
+
+<div class="navbar bg-white">
+	<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Home)">
+		<Tooltip Placement="@Placement.Right" Title="Úvodní stránka">
+			<img src="medias/logo.svg" class="pointer" style="width: 2rem;" alt="Úvodní stránka"/>
+		</Tooltip>
+	</div>
+
+	<br />
+
+	<div class="flex-center flex-col navbar-items h-100">
+		<Tooltip Placement="@Placement.Right" Title="Síň Slávy">
+			<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.HallOfFame)">
+				<img src="medias/ranking-star.svg" class="pointer" style="width: 1.8rem;" alt="Síň Slávy" />
+			</div>
+		</Tooltip>
+
+		<AuthorizeView Roles="@Roles.Student">
+			<Tooltip Placement="@Placement.Right" Title="Moje Výkony">
+				<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Performances)">
+					<img src="medias/chart-simple.svg" class="pointer" style="width: 1.6rem;" alt="Moje Výkony"/>
+				</div>
+			</Tooltip>
+		</AuthorizeView>
+
+		<AuthorizeView Roles="@Roles.Teacher">
+			<Tooltip Placement="@Placement.Right" Title="Správa Aktivit">
+				<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Activities)">
+					<img src="medias/person-swimming.svg" class="pointer" style="width: 2rem;" alt="Správa Aktivit" />
+				</div>
+			</Tooltip>
+
+			<Tooltip Placement="@Placement.Right" Title="Moje Kritéria">
+				<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Criterias)">
+					<img src="medias/stopwatch.svg" class="pointer" style="width: 1.6rem;" alt="Moje Kritéria" />
+				</div>
+			</Tooltip>
+
+			<Tooltip Placement="@Placement.Right" Title="Moje Třídy">
+				<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Courses)">
+					<img src="medias/users.svg" class="pointer" style="width: 2rem;" alt="Moje Třídy" />
+				</div>
+			</Tooltip>
+		</AuthorizeView>
+
+		<AuthorizeView Roles="@Roles.Admin">
+			<Tooltip Placement="@Placement.Right" Title="Správa uživatelů">
+				<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.UserManager)">
+					<img src="medias/users-gear-solid.svg" class="pointer" style="width: 1.9rem;" alt="Správa uživatelů" />
+				</div>
+			</Tooltip>
+		</AuthorizeView>
+
+		<div class="mt-auto">
+			<AuthorizeView>
+				<Authorized>
+					<Tooltip Placement="@Placement.Right" Title="Odhlásit se" Class="w-100 mb-1">
+						<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Logout, true)">
+							<img src="medias/power-off-solid.svg" class="pointer" style="width: 1.5rem;" alt="Odhlásit se" />
+						</div>
+					</Tooltip>
+
+					<Tooltip Placement="@Placement.Right" Title="Můj Profil" Class="w-100">
+						<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Profile)">
+							<img src="medias/user.svg" class="pointer" style="width: 1.2rem;" alt="Můj Profil" />
+						</div>
+					</Tooltip>
+				</Authorized>
+
+				<NotAuthorized>
+					<Tooltip Placement="@Placement.Right" Title="Přihlásit se">
+						<div class="flex-center" @onclick="() => _navigationManager.NavigateTo(Routes.Login)">
+							<img src="medias/right-from-bracket-solid.svg" class="pointer" style="width: 1.5rem;" alt="Přihlásit se" />
+						</div>
+					</Tooltip>
+				</NotAuthorized>
+			</AuthorizeView>
+		</div>
+	</div>
+</div>

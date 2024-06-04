@@ -1,0 +1,47 @@
+﻿<Button OnClick="Model.HandleShowModal">Přidat studenty</Button>
+
+<ModalBase Model="@Model" Title="Přidat studenty">
+	<ChildContent>
+		<Space Direction="@DirectionVHType.Vertical" Class="w-100" Style="min-height: 10rem;">
+			<SpaceItem>
+				<Search Placeholder="Jméno a Příjmení" DebounceMilliseconds="500" @bind-Value="@Model.SearchTerm" OnChange="@Model.HandleSearch" AllowClear />
+			</SpaceItem>
+
+			<SpaceItem>
+				@foreach (var student in Model.SelectedStudents)
+				{
+					<div>
+						<Checkbox Checked=true OnChange="() => Model.HandleDeselect(student)">
+							@student.FullName
+						</Checkbox>
+					</div>
+				}
+			</SpaceItem>
+
+			<hr />
+
+			<SpaceItem>
+				@if (!Model.AvailableStudents.Any())
+				{
+					<Empty>
+						<DescriptionTemplate>
+							Nic nenalezeno
+						</DescriptionTemplate>
+					</Empty>
+				}
+				@foreach (var student in Model.AvailableStudents)
+				{
+					<div>
+						<Checkbox Checked=false OnChange="() => Model.HandleSelect(student)">
+							@student.FullName
+						</Checkbox>
+					</div>
+				}
+			</SpaceItem>
+		</Space>
+	</ChildContent>
+</ModalBase>
+
+@code {
+	[Parameter] public Application.ViewModels.Courses.StudentAddModal Model { get; set; } = default!;
+}

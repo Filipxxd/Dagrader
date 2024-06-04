@@ -1,0 +1,44 @@
+﻿@attribute [Route(Routes.Courses)]
+
+@inherits PageComponentBase<CoursesManagerViewModel>
+
+@attribute [Authorize(Roles = $"{Roles.Teacher}")]
+
+<PageTitle>Dagrader - Třídy</PageTitle>
+
+<PageHeader Class="site-page-header" Title="Třídy" Subtitle="This is a subtitle">
+	<PageHeaderTitle>Třídy</PageHeaderTitle>
+	<PageHeaderSubtitle>This is a subtitle</PageHeaderSubtitle>
+	<PageHeaderExtra>
+		<CourseCreateModal Model=Model.CreateModal />
+	</PageHeaderExtra>
+</PageHeader>
+
+<GridRow Gutter=16>
+	@foreach (var course in Model.Courses)
+	{
+		<GridCol Xs=24 Sm=12 Md=8 Lg=7 Class="flex-center mb-1">
+			<Badge Count=66 Style="right: 1.5rem; top: 1.5rem;" Title="Nové známky ke schválení">
+				<div class="course-item flex-center flex-col pointer" @onclick="() => _navigationManager.NavigateTo(Routes.CourseDetail + course.CourseId)">
+					<h1 style="font-size: 1.8rem; margin-bottom: 0rem;">
+						@($"{course.ClassYear}.{course.ClassSymbol}")
+					</h1>
+
+					<Divider Style="margin: 0.4rem 0" />
+
+					<div class="d-flex flex-col" style="font-size: 0.8rem;">
+						<div class="info-container">
+							<div class="label">Počet žáků:</div>
+							<div class="value">666</div>
+						</div>
+
+						<div class="info-container">
+							<div class="label">Průměr třídy:</div>
+							<div class="value">666</div>
+						</div>
+					</div>
+				</div>
+			</Badge>
+		</GridCol>
+	}
+</GridRow>

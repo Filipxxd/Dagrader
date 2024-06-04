@@ -1,0 +1,59 @@
+﻿<ErrorBoundary @ref=_boundary>
+	<ChildContent>
+		<CascadingAuthenticationState>
+			<AntContainer />
+
+			<Router AppAssembly=@typeof(App).Assembly>
+				<Found Context="routeData">
+					<AuthorizeRouteView RouteData=@routeData DefaultLayout=@typeof(MainLayout)>
+						<NotAuthorized>
+							<Result Status="403" Title="K přístupu nemáte dostatečná oprávnění.">
+								<Extra>
+									<Button @onclick="() => _navigationManager.NavigateTo(Routes.Home)">Domovská stránka</Button>
+								</Extra>
+							</Result>
+						</NotAuthorized>
+					</AuthorizeRouteView>
+
+					<FocusOnNavigate RouteData=@routeData Selector="h1" />
+				</Found>
+				
+				<NotFound>
+					<PageTitle>Stránka Nenalezena</PageTitle>
+
+					<LayoutView Layout=@typeof(MainLayout)>
+						<Result Status="404"
+								Title="Stránka neexistuje.">
+							<Extra>
+								<Button @onclick="() => _navigationManager.NavigateTo(Routes.Home)">Domovská stránka</Button>
+							</Extra>
+						</Result>
+					</LayoutView>
+				</NotFound>
+			</Router>
+		</CascadingAuthenticationState>
+	</ChildContent>
+
+	<ErrorContent>
+		<PageTitle>Chyba Serveru</PageTitle>
+
+		<Result Status="500" 
+				Title="Chyba Serveru" 
+				SubTitle="Nastala neočekávaná chyba na straně serveru, prosím opakujte akci později, případně kontaktujte správce systému.">
+			<Extra>
+				<Button @onclick="() => _navigationManager.NavigateTo(Routes.Home, true)">Domovská stránka</Button>
+			</Extra>
+		</Result>
+	</ErrorContent>
+</ErrorBoundary>
+
+@code{
+	[Inject] public NavigationManager _navigationManager { get; set; } = default!;
+
+	private ErrorBoundary? _boundary;
+
+	protected override void OnParametersSet()
+	{
+		_boundary?.Recover();
+	}
+}

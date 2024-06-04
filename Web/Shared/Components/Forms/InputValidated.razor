@@ -1,0 +1,15 @@
+﻿<Input Placeholder=@Placeholder
+	   Size=@InputSize.Large
+	   Value=@this.Value
+	   ValueChanged=@this.ValueChanged
+	   AllowClear=true
+	   WrapperStyle=@(string.IsNullOrEmpty(ErrorMessage) ? "" : "border: 1px solid red;") />
+
+<ErrorMessage Text=@ErrorMessage />
+
+@code {
+	[Parameter] public string? Value { get; set; }
+	[Parameter] public EventCallback<string?> ValueChanged { get; set; }
+	[Parameter] public string ErrorMessage { get; set; } = string.Empty;
+	[Parameter] public string Placeholder { get; set; } = string.Empty;
+}

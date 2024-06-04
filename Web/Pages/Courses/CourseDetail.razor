@@ -1,0 +1,47 @@
+﻿@inherits PageComponentBase<CourseDetailViewModel>
+
+@attribute [Route((Routes.CourseDetail + "{CourseId:int}"))]
+
+@attribute [Authorize(Roles = $"{Roles.Teacher}")]
+
+<PageTitle>Dagrader - @Model.Class</PageTitle>
+
+<h3>Třída @Model.Class</h3>
+
+<Tabs Animated>
+	<TabPane Tab="Známky" Key="1">
+
+	</TabPane>
+	<TabPane Tab="Žáci" Key="2">
+		<StudentAddModal Model=Model.StudentAddModal />
+		
+		@if (Model.AssignedStudents.Any())
+		{
+			<AntList Bordered Size="large" DataSource=Model.AssignedStudents>
+				<ChildContent Context="student">
+					<ListItem>
+						<span>@student.Value</span>
+						<Button OnClick="() => Model.HandleStudentRemove(student.Key)">X</Button>
+					</ListItem>
+				</ChildContent>
+			</AntList>
+		}
+		else
+		{
+			<div>Třída je prázdná</div>
+		}
+	</TabPane>
+	<TabPane Tab="Správa Třídy" Key="3">
+		Content of Tab Pane 3
+	</TabPane>
+</Tabs>
+
+@code {
+	[Parameter] public int CourseId { get; set; } = default!;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		Model.CourseId = CourseId;
+		await base.OnParametersSetAsync();
+	}
+}

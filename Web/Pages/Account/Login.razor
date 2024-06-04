@@ -1,0 +1,37 @@
+﻿@inherits PageComponentBase<LoginViewModel>
+
+@attribute [Route(Routes.Login)]
+
+<PageTitle>Přihlásit se</PageTitle>
+
+<GridRow Justify="center">
+	<GridCol Span=24 Sm=20 Md=16 Lg=8 Xl=6 Xxl=4>
+		<Space Direction=@DirectionVHType.Vertical Class="w-100">
+			<Divider Orientation="left">Přihlášení</Divider>
+
+			<SpaceItem>
+				<InputValidated Placeholder="Email" @bind-Value=Model.Email ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.Email)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<InputPasswordValidated Placeholder="Heslo" @bind-Value=Model.Password ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.Password)) />
+			</SpaceItem>
+
+			<SpaceItem Class="mx-auto">
+				<Checkbox Label="Zapamatovat" @bind-Value=Model.IsPersistant />
+			</SpaceItem>
+
+			<SpaceItem Class="mx-auto">
+				<Button Type=@ButtonType.Primary Loading=Model.IsBusy OnClick=Model.HandleLoginSubmit>Přihlásit se</Button>
+
+				<Button Type=@ButtonType.Default OnClick="() => _navigationManager.NavigateTo(Routes.Register)">Registrovat se</Button>
+			</SpaceItem>
+
+			<SpaceItem Class="mx-auto">
+				<a @onclick="() => _navigationManager.NavigateTo(Routes.PasswordReset)">
+					Zapomenuté heslo
+				</a>
+			</SpaceItem>
+		</Space>
+	</GridCol>
+</GridRow>

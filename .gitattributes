@@ -1,0 +1,51 @@
+###############################################################################
+# Set default behavior to automatically normalize line endings.
+###############################################################################
+* text=auto
+
+###############################################################################
+# Set default behavior for command prompt diff for C# files.
+# Uncomment the following line if using an older version of Git for Windows.
+###############################################################################
+#*.cs     diff=csharp
+
+###############################################################################
+# Set the merge driver for project and solution files
+# Treat these files as binary to avoid merge conflicts.
+###############################################################################
+*.sln       merge=binary
+*.csproj    merge=binary
+*.vbproj    merge=binary
+*.vcxproj   merge=binary
+*.vcproj    merge=binary
+*.dbproj    merge=binary
+*.fsproj    merge=binary
+*.lsproj    merge=binary
+*.wixproj   merge=binary
+*.modelproj merge=binary
+*.sqlproj   merge=binary
+*.wwaproj   merge=binary
+
+###############################################################################
+# Behavior for image files
+# Image files are treated as binary by default.
+###############################################################################
+*.jpg   binary
+*.png   binary
+*.gif   binary
+
+###############################################################################
+# Diff behavior for common document formats
+# Convert binary document formats to text before diffing them.
+# This feature is only available from the command line.
+###############################################################################
+*.doc   diff=astextplain
+*.DOC   diff=astextplain
+*.docx  diff=astextplain
+*.DOCX  diff=astextplain
+*.dot   diff=astextplain
+*.DOT   diff=astextplain
+*.pdf   diff=astextplain
+*.PDF   diff=astextplain
+*.rtf   diff=astextplain
+*.RTF   diff=astextplain

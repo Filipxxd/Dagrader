@@ -1,0 +1,14 @@
+﻿@inherits PageComponentBase<EmailConfirmViewModel>
+
+@attribute [Route((Routes.Register + "/{UserId}/{Token}"))]
+
+@code {
+	[Parameter] public string UserId { get; set; } = string.Empty;
+
+	[Parameter] public string Token { get; set; } = string.Empty;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await Model.HandleEmailConfirmation(UserId, Token);
+	}
+}

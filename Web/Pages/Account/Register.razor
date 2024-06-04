@@ -1,0 +1,47 @@
+﻿@inherits PageComponentBase<RegisterViewModel>
+
+@attribute [Route((Routes.Register))]
+
+<PageTitle>Registrovat se</PageTitle>
+
+<GridRow Justify="center">
+	<GridCol Span=24 Sm=20 Md=16 Lg=8 Xl=6 Xxl=4>
+		<Space Direction=@DirectionVHType.Vertical Class="w-100">
+			<Divider Orientation="left">Registrace</Divider>
+
+			<SpaceItem>
+				<InputValidated Placeholder="Email" @bind-Value=Model.Email ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.Email)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<InputValidated Placeholder="Křestní Jméno" @bind-Value=Model.FirstName ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.FirstName)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<InputValidated Placeholder="Příjmení" @bind-Value=Model.LastName ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.LastName)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<InputPasswordValidated Placeholder="Heslo" @bind-Value=Model.Password ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.Password)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<InputPasswordValidated Placeholder="Heslo" @bind-Value=Model.ConfirmPassword ErrorMessage=@Model.ValidationResult.GetErrorMessageFor(nameof(Model.ConfirmPassword)) />
+			</SpaceItem>
+
+			<SpaceItem>
+				<Text>Pohlaví: </Text>
+				<Segmented @bind-Value=Model.Gender>
+					<SegmentedItem Value=Gender.Male Label="Muž" />
+					<SegmentedItem Value=Gender.Female Label="Žena" />
+				</Segmented>
+			</SpaceItem>
+
+			<SpaceItem Class="mx-auto">
+				<Button Type=@ButtonType.Primary OnClick=Model.HandleRegistrationSubmit Loading=Model.IsBusy>Registrovat se</Button>
+
+				<Button Type=@ButtonType.Default OnClick="() => _navigationManager.NavigateTo(Routes.Login)">Přihlásit se</Button>
+			</SpaceItem>
+		</Space>
+	</GridCol>
+</GridRow>

@@ -1,0 +1,22 @@
+﻿@inherits PageComponentBase<ModalBaseViewModel>
+
+<Modal Title=@Title
+	   Visible=@Model.IsVisible
+	   OnOk=@Model.HandleConfirm
+	   MaskClosable=false
+	   Closable=false
+	   OnCancel=@Model.HandleCancel
+	   ConfirmLoading=@Model.IsBusy
+	   DestroyOnClose>
+	   @ChildContent
+</Modal>
+
+@code {
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+	[Parameter] public string Title { get; set; } = string.Empty;
+
+	protected override bool ShouldRender()
+	{
+		return true;
+	}
+}
