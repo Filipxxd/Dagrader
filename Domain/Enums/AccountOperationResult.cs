@@ -2,12 +2,10 @@
 
 public enum AccountOperationResult
 {
-	PasswordInvalid,
+	Success,
 	EmailTaken,
 	EmailNotConfirmed,
-	EmailInvalid,
-	CredentialsInvalid,
-	Success,
+	NotValid,
 	LockedOut,
 	Failed
 }

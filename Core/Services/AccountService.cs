@@ -39,7 +39,7 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 				return AccountOperationResult.EmailTaken;
 			}
 
-			return AccountOperationResult.EmailInvalid;
+			return AccountOperationResult.NotValid;
 		}
 
 		await SendEmailConfirmation(newUser, registerURL);
@@ -57,7 +57,7 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 
 		if (user is null)
 		{
-			return AccountOperationResult.CredentialsInvalid;
+			return AccountOperationResult.NotValid;
 		}
 
 		if (!user.EmailConfirmed)
@@ -66,7 +66,7 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 		}
 
 		var canSignIn = await _signInManager.CanSignInAsync(user);
-		if (canSignIn is false)
+		if (!canSignIn)
 		{
 			return AccountOperationResult.LockedOut;
 		}
@@ -77,11 +77,11 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 			return AccountOperationResult.Success;
 		}
 
-		return AccountOperationResult.CredentialsInvalid;
+		return AccountOperationResult.NotValid;
 	}
 
 
-	public async Task SendEmailResetPassword(string email, string passwordResetURL)
+	public async Task<AccountOperationResult> SendEmailResetPassword(string email, string passwordResetURL)
 	{
 		// TODO: Validate email
 
@@ -89,7 +89,7 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 
 		if (user is null)
 		{
-			return;
+			return AccountOperationResult.NotValid;
 		}
 
 
@@ -101,10 +101,12 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 		var html = "<p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;\">Dobrý den,</p> <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;\">dne <strong>" + DateTime.Today.Date.ToShortDateString() + "</strong> v <strong>" + DateTime.Now.ToShortTimeString() + "</strong> jste požádal o obnovení hesla na Vašem účtu.</p> <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;\">Prosím postupujte odkazem níže.</p> <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"btn btn-primary\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; width: 100%;\" width=\"100%\"> <tbody> <tr> <td align=\"left\" style=\"font-family: sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;\" valign=\"top\"> <table role=\"presentation\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: auto;\"> <tbody> <tr> <td style=\"font-family: sans-serif; font-size: 14px; vertical-align: top; border-radius: 5px; text-align: center; background-color: #3498db;\" valign=\"top\" align=\"center\" bgcolor=\"#3498db\"> <a href=\"" + HtmlEncoder.Default.Encode(callbackUrl) + "\" target=\"_blank\" style=\"border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-decoration: none; text-transform: capitalize; background-color: #3498db; border-color: #3498db; color: #ffffff;\">Resetovat Heslo</a> </td> </tr> </tbody> </table> </td> </tr> </tbody> </table> <p style=\"font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;\">Pokud jste tuto žádost nevyvolali, email ignorujte.</p>";
 
 		_ = _emailSender.SendEmailAsync(email, "Dagrader - Zapomenuté Heslo", html);
+
+		return AccountOperationResult.Success;
 	}
 
 
-	public async Task<EntityOperationResult> SubmitPasswordReset(string encodedResetToken, string email, string password)
+	public async Task<AccountOperationResult> SubmitPasswordReset(string encodedResetToken, string email, string password)
 	{
 		// TODO: Validation
 
@@ -114,7 +116,7 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 		if (user is null)
 		{
 			// Log
-			return EntityOperationResult.NotFound;
+			return AccountOperationResult.NotValid;
 		}
 
 		var result = await _userManager.ResetPasswordAsync(user, resetToken, password);
@@ -122,24 +124,24 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 		if (!result.Succeeded)
 		{
 			// TODO: Log error
-			return EntityOperationResult.NoActionTaken;
+			return AccountOperationResult.Failed;
 		}
 
-		return EntityOperationResult.Success;
+		return AccountOperationResult.Success;
 	}
 
-	public Task<EntityOperationResult> SubmitPasswordReset(string originalPassword, string newPassword)
+	public Task<AccountOperationResult> SubmitPasswordReset(string originalPassword, string newPassword)
 	{
 		throw new NotImplementedException();
 	}
 
-	public async Task<EntityOperationResult> ConfirmEmail(string userID, string encodedToken)
+	public async Task<AccountOperationResult> ConfirmEmail(string userID, string encodedToken)
 	{
 		var user = await _userManager.FindByIdAsync(Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(userID)));
 
 		if (user is null)
 		{
-			return EntityOperationResult.NotFound;
+			return AccountOperationResult.NotValid;
 		}
 
 		var confirmationToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(encodedToken));
@@ -147,10 +149,11 @@ public sealed class AccountService(UserManager<AppUser> userManager, IUserStore<
 
 		if (!result.Succeeded)
 		{
-			return EntityOperationResult.NoActionTaken;
+			// LOG
+			return AccountOperationResult.Failed;
 		}
 
-		return EntityOperationResult.Success;
+		return AccountOperationResult.Success;
 	}
 
 	private async Task SendEmailConfirmation(AppUser newUser, string registerURL)

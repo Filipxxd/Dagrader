@@ -30,13 +30,13 @@ public sealed class EmailConfirmViewModel(IAccountService userService, ISessionH
 		{
 			var result = await _userService.ConfirmEmail(userId, token);
 
-			if (result != EntityOperationResult.Success)
+			if (result == AccountOperationResult.Success)
 			{
-				_ = _messageService.Error("Při ověřování emailu nastala chyba.");
+				_ = _messageService.Success("Email úspěšně ověřen, můžete se přihlásit.");
 			}
 			else
 			{
-				_ = _messageService.Success("Email úspěšně ověřen, můžete se přihlásit.");
+				_ = _messageService.Error("Při ověřování emailu nastala chyba.");
 			}
 
 			_navigationManager.NavigateTo(Routes.Login);

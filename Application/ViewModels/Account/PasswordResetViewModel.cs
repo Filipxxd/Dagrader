@@ -4,6 +4,7 @@ using Application.Validators;
 using Application.Validators.Identity;
 using Application.ViewModels.Base;
 using Core.Validators;
+using Domain.Enums;
 using Domain.Handlers;
 using Domain.Services;
 using FluentValidation.Results;
@@ -75,7 +76,7 @@ public sealed class PasswordResetViewModel(IAccountService userService, ISession
 
 			var result = await _userService.SubmitPasswordReset(code, Email, Password);
 
-			if (result == Domain.Enums.EntityOperationResult.Success)
+			if (result == AccountOperationResult.Success)
 			{
 				_ = _messageService.Success("Heslo úspěšně změněno, můžete se přihlásit.");
 			}

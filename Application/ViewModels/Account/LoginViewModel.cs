@@ -11,7 +11,8 @@ using Microsoft.AspNetCore.Components;
 
 namespace Application.ViewModels;
 
-public sealed class LoginViewModel(IAccountService userService, ISessionHandler sessionHandler, EntityValidator validator, NavigationManager navigationManager, MessageService messageService) : ViewModelBase
+public sealed class LoginViewModel(IAccountService userService, ISessionHandler sessionHandler, EntityValidator validator, NavigationManager navigationManager, MessageService messageService)
+	: ViewModelBase
 {
 	private readonly IAccountService _userService = userService;
 	private readonly ISessionHandler _sessionHandler = sessionHandler;
@@ -19,14 +20,12 @@ public sealed class LoginViewModel(IAccountService userService, ISessionHandler 
 	private readonly NavigationManager _navigationManager = navigationManager;
 	private readonly MessageService _messageService = messageService;
 
-
 	private ValidationResult _validationResult = new();
 	public ValidationResult ValidationResult
 	{
 		get => _validationResult;
 		set => SetValue(ref _validationResult, value);
 	}
-
 
 	public string Email { get; set; } = string.Empty;
 	public string Password { get; set; } = string.Empty;
