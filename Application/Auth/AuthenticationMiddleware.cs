@@ -11,17 +11,22 @@ public sealed class AuthenticationMiddleware(RequestDelegate next)
 	private readonly RequestDelegate _next = next;
 	private static readonly ConcurrentDictionary<string, LoginCredentials> Logins = new();
 
-	public static void Add(string key, LoginCredentials loginForm)
+	public const string Key = "key";
+
+	public static string Add(LoginCredentials loginForm)
 	{
+		var key = Guid.NewGuid().ToString();
 		Logins.AddOrUpdate(key, loginForm, (k, o) => loginForm);
+
+		return key;
 	}
 
 	public async Task Invoke(HttpContext context, SignInManager<AppUser> signInMgr)
 	{
 
-		if (context.Request.Path == Routes.Login && context.Request.Query.ContainsKey("key"))
+		if (context.Request.Path == Routes.Login && context.Request.Query.ContainsKey(Key))
 		{
-			var key = context.Request.Query["key"].ToString();
+			var key = context.Request.Query[Key].ToString();
 
 			if (Logins.TryGetValue(key, out var loginInfo))
 			{

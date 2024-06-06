@@ -4,6 +4,7 @@ using Application.Constants;
 using Application.Validators.Identity;
 using Application.ViewModels.Base;
 using Core.Validators;
+using Domain.Enums;
 using Domain.Handlers;
 using Domain.Services;
 using FluentValidation.Results;
@@ -53,25 +54,33 @@ public sealed class LoginViewModel(IAccountService userService, ISessionHandler 
 
 			var result = await _userService.CheckLoginForUser(Email, Password);
 
-			if (result == Domain.Enums.AccountOperationResult.Success)
+			switch (result)
 			{
-				var key = Guid.NewGuid().ToString();
-				AuthenticationMiddleware.Add(key, new LoginCredentials(Email, Password, IsPersistant));
+				case AccountOperationResult.Success:
+					{
+						var key = AuthenticationMiddleware.Add(new(Email, Password, IsPersistant));
 
-				// forceLoad => re-trigger AuthSessionMiddleware
-				_navigationManager.NavigateTo($"{Routes.Login}?key={key}", true);
-			}
-			else if (result == Domain.Enums.AccountOperationResult.EmailNotConfirmed)
-			{
-				_ = _messageService.Error("Váš email nebyl dosud potvrzen.");
-			}
-			else if (result == Domain.Enums.AccountOperationResult.LockedOut)
-			{
-				_ = _messageService.Error("Váš účet byl dočasně zablokován.");
-			}
-			else
-			{
-				_ = _messageService.Error("Neplatné jméno nebo heslo.");
+						// forceLoad - re-trigger AuthenticationMiddleware
+						_navigationManager.NavigateTo($"{Routes.Login}?{AuthenticationMiddleware.Key}={key}", true);
+						break;
+					}
+
+				case AccountOperationResult.EmailNotConfirmed:
+					{
+						_ = _messageService.Error("Váš email nebyl dosud potvrzen.");
+						break;
+					}
+				case AccountOperationResult.LockedOut:
+					{
+						_ = _messageService.Error("Váš účet byl dočasně zablokován.");
+						break;
+					}
+
+				default:
+					{
+						_ = _messageService.Error("Neplatný email nebo heslo.");
+						break;
+					}
 			}
 
 		});
