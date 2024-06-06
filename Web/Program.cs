@@ -34,7 +34,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseMiddleware<AuthenticationMiddleware>();
+app.UseMiddleware<AuthMiddleware>();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");

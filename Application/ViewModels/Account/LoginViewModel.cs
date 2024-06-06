@@ -41,7 +41,7 @@ public sealed class LoginViewModel(IAccountService userService, ISessionHandler 
 		}
 	}
 
-	public async Task HandleLoginSubmit()
+	public async Task HandleLogin()
 	{
 		await SetBusyAsync(async () =>
 		{
@@ -58,10 +58,10 @@ public sealed class LoginViewModel(IAccountService userService, ISessionHandler 
 			{
 				case AccountOperationResult.Success:
 					{
-						var key = AuthenticationMiddleware.Add(new(Email, Password, IsPersistant));
+						var loginKey = AuthMiddleware.EnqueueLogin(new(Email, Password, IsPersistant));
 
-						// forceLoad - re-trigger AuthenticationMiddleware
-						_navigationManager.NavigateTo($"{Routes.Login}?{AuthenticationMiddleware.Key}={key}", true);
+						// forceLoad - re-trigger AuthMiddleware
+						_navigationManager.NavigateTo($"{Routes.Login}?{AuthMiddleware.LoginKey}={loginKey}", true);
 						break;
 					}
 

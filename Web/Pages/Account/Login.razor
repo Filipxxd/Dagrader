@@ -22,7 +22,7 @@
 			</SpaceItem>
 
 			<SpaceItem Class="mx-auto">
-				<Button Type=@ButtonType.Primary Loading=Model.IsBusy OnClick=Model.HandleLoginSubmit>Přihlásit se</Button>
+				<Button Type=@ButtonType.Primary Loading=Model.IsBusy OnClick=Model.HandleLogin>Přihlásit se</Button>
 
 				<Button Type=@ButtonType.Default OnClick="() => _navigationManager.NavigateTo(Routes.Register)">Registrovat se</Button>
 			</SpaceItem>
