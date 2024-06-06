@@ -5,7 +5,6 @@ public static class Routes
 	public const string Home = "/";
 
 	// Identity
-	public const string IdentityDefault = "/Identity";
 	public const string Profile = "/profil";
 	public const string Login = "/prihlasit-se";
 	public const string Logout = "/odhlasit-se";
